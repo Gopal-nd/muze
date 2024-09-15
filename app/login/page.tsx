@@ -14,7 +14,7 @@ export default function Component() {
   const session = useSession()
 
   if(session.data?.user?.email){
-    router.push("/")
+    router.push("/dashboard")
   }
   return (
     <div className="mx-auto max-w-sm space-y-6 flex justify-center flex-col gap-2 items-center h-screen ">
