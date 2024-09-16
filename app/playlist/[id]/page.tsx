@@ -4,6 +4,10 @@ import YouTubePlayer from "@/components/YouTubePlayer"
 import axios from "axios"
 import { Addsong, GetAllSongs } from "@/actions/addsong";
 import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import { CopyIcon } from "lucide-react";
+import { Session } from "inspector/promises";
+import { useSession } from "next-auth/react";
 
 
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY ?? 'AIzaSyDbmp10rFr_H5g6UO9NCig7e7Nj3kNCfbI'; 
@@ -18,10 +22,10 @@ export interface Video {
 const Home = ({params}: {params: {id: string}}) => {
 
 
-  const [playlist, setPlaylist] = useState<Video[]>([]);
+  const [playlist, setPlaylist] = useState<any[]>([]);
   const [url, setUrl] = useState<string>('');
   const {toast} = useToast()
-
+  const user = useSession()
   const addVideo = async() => {
 
 
@@ -30,7 +34,7 @@ const Home = ({params}: {params: {id: string}}) => {
 
 
 
-    const exist = playlist.some((video) => video.youtubeId === videoId) 
+    const exist = playlist.some((video:any) => video.youtubeId === videoId) 
      if(exist){
        alert('Video already added')
        setUrl('')
@@ -92,23 +96,35 @@ const Home = ({params}: {params: {id: string}}) => {
 
   return (
     <div className="container mx-auto mt-20 px-4">
-    <h1 className="text-3xl font-bold text-center mt-10">YouTube Playlist App</h1>
+      <div className="flex justify-evenly items-center mt-20">
+    <h1 className="text-3xl font-bold text-center ">YouTube Playlist App</h1>
+        <Button onClick={() => { navigator.clipboard.writeText(window.location.href),
+        toast({
+          title: "Link Copied",
+        })
+        }}><CopyIcon className="mr-2"/> Copy Link</Button>
+      </div>
+{user.data?.user?.email ===  playlist[0]?.email  &&
 
-    <div className="flex justify-center mt-8">
+    <div className="flex justify-center px-10 flex-grow mt-8">
+      
+
       <input
         type="text"
         value={url}
         onChange={(e) => setUrl(e.target.value)}
         placeholder="Enter YouTube URL"
-        className="border rounded-lg px-4 py-2 w-2/3 sm:w-1/3   focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
+        className="border rounded-lg px-4 py-2 w-full sm:w-1/3   focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
       <button
         onClick={addVideo}
         className="ml-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200"
-      >
+        >
         Add Video
       </button>
+        
     </div>
+        }
 
   
 

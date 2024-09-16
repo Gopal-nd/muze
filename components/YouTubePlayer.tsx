@@ -13,8 +13,8 @@ interface Video {
 }
 
 interface YouTubePlayerProps {
-  playlist: Video[];
-  setPlaylist: (playlist: Video[]) => void;
+  playlist: any;
+  setPlaylist: (playlist: any) => void;
   playlistId: string;
 }
 
@@ -39,7 +39,7 @@ const YouTubePlayer: FC<YouTubePlayerProps> = ({ playlist, setPlaylist, playlist
           description: "Your song has been removed successfully.",
         });
       }
-      const updatedPlaylist = playlist.filter((_, i) => i !== index);
+      const updatedPlaylist = playlist.filter((_: any, i: number) => i !== index);
       setPlaylist(updatedPlaylist);
       if (currentVideoIndex === index) {
         setCurrentVideoIndex(Math.max(0, currentVideoIndex - 1));

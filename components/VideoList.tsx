@@ -1,10 +1,17 @@
-import { FC } from "react";
+'use client'
+import { FC, useEffect, useState } from "react";
 import { Button } from "./ui/button";
+import { useSession } from "next-auth/react";
+import { hasUserUpvoted, upvote } from "@/actions/upvote";
+import { useRouter } from "next/navigation";
 
 interface Video {
   youtubeId: string;
   title: string;
   thumbnail: string;
+  email: string;
+  id: string;
+  upvote: number;
 }
 
 interface VideoListProps {
@@ -15,6 +22,35 @@ interface VideoListProps {
 }
 
 const VideoList: FC<VideoListProps> = ({ playlist, onRemove, onSelect, currentVideoIndex }) => {
+  const { data: session } = useSession();
+  const [userUpvotes, setUserUpvotes] = useState<{ [key: string]: boolean }>({});
+    const router = useRouter()
+  // Fetch user's upvote status for each video
+  useEffect(() => {
+    async function fetchUpvotes() {
+      const upvoteStatuses: { [key: string]: boolean } = {};
+      for (const video of playlist) {
+        const hasUpvoted = await hasUserUpvoted(video.id);
+        upvoteStatuses[video.id] = hasUpvoted;
+      }
+      setUserUpvotes(upvoteStatuses);
+    }
+    fetchUpvotes();
+  }, [playlist]);
+
+  const toggleVote = async (id: string) => {
+    const currentStatus = userUpvotes[id];
+    
+    // Toggle vote status
+    await upvote(id);
+    router.refresh()
+    // Optimistically update the UI
+    setUserUpvotes((prevUpvotes) => ({
+      ...prevUpvotes,
+      [id]: !currentStatus,
+    }));
+  };
+
   return (
     <div className="w-full lg:w-1/2">
       <h2 className="text-xl font-semibold">Playlist</h2>
@@ -32,12 +68,24 @@ const VideoList: FC<VideoListProps> = ({ playlist, onRemove, onSelect, currentVi
                 <p>
                   {index + 1}. {video.title}
                 </p>
-                <Button
-                  onClick={() => onRemove(video.youtubeId, index)}
-                  className="ml-4 bg-red-500 text-white hover:bg-red-600"
-                >
-                  Remove
-                </Button>
+                <div className="flex items-center gap-4">
+                  {session?.user?.email === video.email && (
+                    <Button
+                      onClick={() => onRemove(video.youtubeId, index)}
+                      className="ml-4 bg-red-500 text-white hover:bg-red-600"
+                    >
+                      Remove
+                    </Button>
+                  )}
+                  <p>{
+                    session?.user?.email &&
+                    <Button onClick={() => toggleVote(video.id)}>
+                      {userUpvotes[video.id] ? "Upvoted" : "Vote"}
+                    </Button>
+}
+                    <span className="ml-2"> vote {video.upvote}</span>
+                  </p>
+                </div>
               </div>
             </li>
           ))}

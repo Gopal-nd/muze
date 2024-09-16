@@ -31,7 +31,10 @@ export const allPlaylists = async() => {
         }
         ,select:{
             name:true,
-            id:true
+            id:true,
+            email:true,
+            
+            
         }
     })
     return playlists

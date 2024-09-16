@@ -17,6 +17,7 @@ model User {
   sessions      Session[]
   playlist    Playlist[]
   song          Song[]
+   upvotes       Upvote[]
 
  
   createdAt DateTime @default(now())
@@ -78,12 +79,28 @@ model Song{
   title String
   thumbnail String
   youtubeId String
+  upvote Int @default(0)
   playListId String
   email String
   user User @relation(fields: [email],references: [email])
   playlist Playlist @relation(fields: [playListId],references: [id], onDelete: Cascade)
+  upvotes   Upvote[]  
 
     createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   @@unique([youtubeId, playListId, email])
 }
+
+model Upvote {
+  id        String   @id @default(uuid())
+  email    String
+  songId    String
+  user      User     @relation(fields: [email], references: [email], onDelete: Cascade)
+  song      Song     @relation(fields: [songId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([email, songId]) // A user can upvote a song only once
+}
+
+

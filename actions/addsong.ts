@@ -17,6 +17,15 @@ export const Addsong = async (video: Video, playlistId: string) => {
                   email: email,
                 },
             },
+            select: {
+                youtubeId: true,
+                title: true,
+                email: true,
+                thumbnail: true,
+                playListId: true,
+                id: true,
+                
+            }
         });
         
         if (exist) {
@@ -51,7 +60,15 @@ export async function GetAllSongs(playListId: string) {
       title: true,
       thumbnail: true,
       youtubeId: true,
+      email: true,
+      id:true,
+      upvotes: true,
+      upvote: true
     },
+    orderBy:{
+        upvote: 'desc'
+    }
+    
   });
   return songs;
 }
@@ -67,7 +84,9 @@ export async function RmoveSong(youtubeId: string, playListId: string) {
           playListId: playListId,
           email: email,
         },
+        
       },
+      
     });
     return true;
   } catch {
