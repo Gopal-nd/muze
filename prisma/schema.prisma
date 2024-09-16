@@ -16,6 +16,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   playlist    Playlist[]
+  song          Song[]
 
  
   createdAt DateTime @default(now())
@@ -78,8 +79,11 @@ model Song{
   thumbnail String
   youtubeId String
   playListId String
+  email String
+  user User @relation(fields: [email],references: [email])
   playlist Playlist @relation(fields: [playListId],references: [id], onDelete: Cascade)
 
     createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  @@unique([youtubeId, playListId, email])
 }

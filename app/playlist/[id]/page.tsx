@@ -1,26 +1,46 @@
 'use client'
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import YouTubePlayer from "@/components/YouTubePlayer"
 import axios from "axios"
+import { Addsong, GetAllSongs } from "@/actions/addsong";
+import { useToast } from "@/hooks/use-toast";
 
 
-const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY ?? 'AIzaSyDbmp10rFr_H5g6UO9NCig7e7Nj3kNCfbI'; // Replace with your API key
+const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY ?? 'AIzaSyDbmp10rFr_H5g6UO9NCig7e7Nj3kNCfbI'; 
 
-interface Video {
-  id: string;
+export interface Video {
+  
+  youtubeId: string;
   title: string;
   thumbnail: string;
 }
 
-const Home = () => {
+const Home = ({params}: {params: {id: string}}) => {
+
+
   const [playlist, setPlaylist] = useState<Video[]>([]);
   const [url, setUrl] = useState<string>('');
-
+  const {toast} = useToast()
 
   const addVideo = async() => {
+
+
     // Extract the YouTube video ID from the URL
-    const videoId = url.split('v=')[1]?.split('&')[0];
-    if (videoId) {
+    const videoId = url.split("v=")[1]?.split("&")[0]
+
+
+
+    const exist = playlist.some((video) => video.youtubeId === videoId) 
+     if(exist){
+       alert('Video already added')
+       setUrl('')
+      }
+      
+    
+    if (!exist && videoId) {
+
+      // Check if the video is already in the playlist
+
       try {
         // Fetch video metadata from YouTube API
         const response = await axios.get(
@@ -31,24 +51,44 @@ const Home = () => {
         if (response.data.items.length > 0) {
           const videoData = response.data.items[0].snippet;
           const newVideo: Video = {
-            id: videoId,
+            youtubeId: videoId,
             title: videoData.title,
             thumbnail: videoData.thumbnails.medium.url,
           };
 
+
+          // Add the new video to the playlist
           setPlaylist([...playlist, newVideo]);
+
+          const res = await Addsong(newVideo,params.id)
+          if(res){
+            toast({
+              title: "Song Added",
+              description: "Your song has been added successfully.",
+            })
+          }
           setUrl('');
         } else {
+          setUrl('');
           alert('Video not found');
         }
       } catch (error) {
         console.error('Error fetching video data:', error);
         alert('Failed to fetch video details');
       }
-    } else {
-      alert('Invalid YouTube URL');
+    } else{
+      setUrl('');
+      alert('Invalid URL')
     }
   };
+
+  useEffect(() => {
+    const fetchPlaylist = async() => {
+      const songs = await GetAllSongs(params.id)
+      setPlaylist(songs)
+    }
+    fetchPlaylist()
+  },[])
 
   return (
     <div className="container mx-auto mt-20 px-4">
@@ -60,7 +100,7 @@ const Home = () => {
         value={url}
         onChange={(e) => setUrl(e.target.value)}
         placeholder="Enter YouTube URL"
-        className="border rounded-lg px-4 py-2 w-2/3 sm:w-1/3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="border rounded-lg px-4 py-2 w-2/3 sm:w-1/3   focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       <button
         onClick={addVideo}
@@ -72,7 +112,7 @@ const Home = () => {
 
   
 
-    <YouTubePlayer playlist={playlist} setPlaylist={setPlaylist} />
+    <YouTubePlayer playlist={playlist} setPlaylist={setPlaylist} playlistId={params.id} />
 
   </div>
   )
