@@ -70,6 +70,7 @@ const Home = ({params}: {params: {id: string}}) => {
               title: "Song Added",
               description: "Your song has been added successfully.",
             })
+            window.location.reload()
           }
           setUrl('');
         } else {
