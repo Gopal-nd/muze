@@ -6,13 +6,11 @@ import { Addsong, GetAllSongs } from "@/actions/addsong";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { CopyIcon } from "lucide-react";
-import { Session } from "inspector/promises";
 import { useSession } from "next-auth/react";
 import { getEmailofId } from "@/actions/playlistactions";
 
 
-const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY ?? 'AIzaSyDbmp10rFr_H5g6UO9NCig7e7Nj3kNCfbI'; 
-
+const YOUTUBE_API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY!;
 export interface Video {
   
   youtubeId: string;
