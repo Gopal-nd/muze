@@ -27,10 +27,22 @@ const Home = ({params}: {params: {id: string}}) => {
   const {toast} = useToast()
   const user = useSession()
   const addVideo = async() => {
-
+    function extractVideoId(url: string): string {
+      // Handle `youtube.com` URLs
+      const videoId = url.split("v=")[1]?.split(/[?&]/)[0];
+    
+      // If `v=` doesn't exist, handle `youtu.be` URLs
+      if (!videoId) {
+        return url.split("youtu.be/")[1]?.split(/[?&]/)[0] 
+      }
+    
+      // Ensure the ID is 11 characters long (YouTube video IDs are 11 characters)
+      return videoId
+    }
+    
 
     // Extract the YouTube video ID from the URL
-    const videoId = url.split("v=")[1]?.split("&")[0]
+    const videoId = extractVideoId(url);
 
 
 
@@ -39,8 +51,7 @@ const Home = ({params}: {params: {id: string}}) => {
        alert('Video already added')
        setUrl('')
       }
-      
-    
+
     if (!exist && videoId) {
 
       // Check if the video is already in the playlist
