@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { CopyIcon } from "lucide-react";
 import { Session } from "inspector/promises";
 import { useSession } from "next-auth/react";
+import { getEmailofId } from "@/actions/playlistactions";
 
 
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY ?? 'AIzaSyDbmp10rFr_H5g6UO9NCig7e7Nj3kNCfbI'; 
@@ -24,6 +25,7 @@ const Home = ({params}: {params: {id: string}}) => {
 
   const [playlist, setPlaylist] = useState<any[]>([]);
   const [url, setUrl] = useState<string>('');
+  const [email, setEmail] = useState<any>('');
   const {toast} = useToast()
   const user = useSession()
   const addVideo = async() => {
@@ -90,6 +92,10 @@ const Home = ({params}: {params: {id: string}}) => {
     const fetchPlaylist = async() => {
       const songs = await GetAllSongs(params.id)
       setPlaylist(songs)
+      const platlistEmail = await getEmailofId(params.id)
+      setEmail(platlistEmail)
+      console.log("createor email " + platlistEmail)
+      
     }
     fetchPlaylist()
   },[])
@@ -104,7 +110,7 @@ const Home = ({params}: {params: {id: string}}) => {
         })
         }}><CopyIcon className="mr-2"/> Copy Link</Button>
       </div>
-{user.data?.user?.email ===  playlist[0]?.email  &&
+{ user.data?.user?.email ===  email   &&
 
     <div className="flex justify-center px-10 flex-grow mt-8">
       
