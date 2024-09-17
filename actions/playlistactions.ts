@@ -39,3 +39,18 @@ export const allPlaylists = async() => {
     })
     return playlists
 }
+
+
+
+export const  getEmailofId =async(id:string)=>{
+
+    const playlist = await prisma.playlist.findUnique({
+        where:{
+            id
+        },
+        select:{
+            email:true
+        }
+    })
+    return playlist?.email
+}
