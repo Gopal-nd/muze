@@ -21,8 +21,8 @@ export default function LandingPage() {
       <section className="">
         <div className="container mx-auto px-6 py-24 flex flex-col md:flex-row items-center">
           <div className="flex flex-col w-full lg:w-1/2 justify-center items-start pt-12 pb-24 px-6">
-            <h1 className="font-bold text-4xl my-4">Discover Our Amazing Produc</h1>
-            <p className="leading-normal mb-4">Choose what you want to See</p>
+            <h1 className="font-bold text-4xl my-4">Let Your Audience Choose What to Play Next</h1>
+            <p className="leading-normal mb-4">Select what you what to see</p>
             <Button className=" rounded sition-all duration-300 ease-in-out transform hover:scale-105">
               <Link href="/login"className='flex gaap-2 items-center'>
               Get Started <ArrowRight className="ml-2" />
@@ -41,9 +41,9 @@ export default function LandingPage() {
           <h2 className="text-4xl font-bold text-center  mb-8">Features</h2>
           <div className="flex flex-wrap gap-4 justify-center  items-center ">
             {[
-              { icon: Check, title: "Easy to Use", description: "Intuitive interface for seamless experience" },
-              { icon: Star, title: "Powerful Analytics", description: "Gain insights with advanced data analysis" },
-              { icon: ArrowRight, title: "Fast Performance", description: "Lightning-quick response times than before" }
+              { icon: Check, title: "No More Ads", description: " experience ad-free music with any ads" },
+              { icon: Star, title: "quick Analytics", description: "Get the Top Voated songs choosen by audience" },
+              { icon: ArrowRight, title: "No More Distractions", description: "no more distractons and recomendations" }
             ].map((feature, index) => (
               <div key={index} className=" px-4 py-4 border border-white  mt-6 shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300">
                 <div className="flex-shrink-0">

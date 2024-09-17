@@ -5,7 +5,7 @@ import { serverSession } from "@/utils/getserverSession";
 
 export const Addsong = async (video: Video, playlistId: string) => {
   const id = await serverSession();
-  const email: string = id?.user?.email!;
+  const email: string  = id.user?.email ||""
 
   try {
     

@@ -1,7 +1,9 @@
 import { getServerSession } from "next-auth"
 import { authOptions } from "./auth"
 
-export const serverSession = async() => {
-    const session =await getServerSession(authOptions)
-    return session
+
+export const serverSession = async () :Promise<any>=> {
+    const options:any =  authOptions
+  const session = await getServerSession(options)
+  return session
 }

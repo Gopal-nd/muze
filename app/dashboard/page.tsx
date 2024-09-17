@@ -1,20 +1,18 @@
+"use client";
 
-"use client"
-import { Button } from "@/components/ui/button";
-import { signIn, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { PlusIcon, SearchIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import PlaylistWithSuspense from "@/components/PlaylistList";
 import { CreatePlaylist } from "@/actions/playlistactions";
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import PlaylistList from '@/components/PlaylistList';
 
-
-export default function PlaylistManager() {
+const PlaylistManager = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [newPlaylistName, setNewPlaylistName] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -83,8 +81,9 @@ export default function PlaylistManager() {
         </Dialog>
       </div>
 
-      {/* Use the Suspense component here */}
-      <PlaylistWithSuspense />
+      <PlaylistList />
     </div>
   );
-}
+};
+
+export default PlaylistManager;
